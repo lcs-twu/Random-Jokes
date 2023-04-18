@@ -16,6 +16,8 @@ struct JokeView: View {
     
     @State var currentJoke: Joke?
     
+    @State var savedToDatabse = false
+    
     var body: some View {
         NavigationView{
             VStack{
@@ -75,6 +77,8 @@ struct JokeView: View {
                                                currentJoke.type,
                                                currentJoke.setup,
                                                currentJoke.punchline)
+                                
+                                savedToDatabse = true
                             }
                         }
                     }
@@ -82,6 +86,7 @@ struct JokeView: View {
                     Text("Save for later")
                 })
                 .disabled(punchlineOpacity == 0.0 ? true : false)
+                .disabled(savedToDatabse == true ? true: false)
                 .tint(.green)
                 .buttonStyle(.borderedProminent)
             }
