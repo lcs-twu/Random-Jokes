@@ -81,6 +81,8 @@ struct JokeView: View {
                 }, label: {
                     Text("Save for later")
                 })
+                .disabled(punchlineOpacity == 0.0 ? true : false)
+                .tint(.green)
                 .buttonStyle(.borderedProminent)
             }
             .navigationTitle("Random Jokes")
