@@ -4,10 +4,13 @@
 //
 //  Created by Tom Wu on 2023-04-14.
 //
-
+import Blackbird
 import SwiftUI
 
 struct JokeView: View {
+    
+    //Connection to the new database(new records)
+    @Environment(\.blackbirdDatabase) var db: Blackbird.Database?
     
     @State var punchlineOpacity = 0.0
     
@@ -61,6 +64,23 @@ struct JokeView: View {
                                  })
                                  .disabled(punchlineOpacity == 0.0 ? true : false)
                                  .buttonStyle(.borderedProminent)
+                
+                Button(action: {
+                    Task {
+                        if let currentJoke = currentJoke {
+                            try await db!.transaction { core in
+                                
+                                try core.query("INSERT INTO Joke (id, type, setup, punchline) VALUES (?,?,?,?)",
+                                               currentJoke.id,
+                                               currentJoke.type,
+                                               currentJoke.setup,
+                                               currentJoke.punchline)
+                            }
+                        }
+                    }
+                }, label: {
+                    Text("Save for later")
+                })
             }
             .navigationTitle("Random Jokes")
         }
@@ -73,5 +93,6 @@ struct JokeView: View {
 struct JokeView_Previews: PreviewProvider {
     static var previews: some View {
         JokeView()
+            .environment(\.blackbirdDatabase, AppDatabase.instance)
     }
 }
